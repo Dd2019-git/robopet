@@ -1,0 +1,53 @@
+9. Todo 1 Неплохо бы все это перевести в облако, например Quickstart for PowerShell in Azure Cloud Shell
+https://learn.microsoft.com/en-us/azure/cloud-shell/quickstart-powershell
+или
+https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-powershell?tabs=azure-cli%2Cbrowser
+
+9todo 2 Сделать try\catch на пинг и выход в случае отсутствия пинга. 
+Перекомпоновать функции очистки и записи для компактности. Потому что случись сбой и не понятно откуда он и что не считалось.
+Добавить функцию для отправки в несколько чатов \ каналов. 
+
+9todo3 - переписать функции отправки в виде старта отдельных потоков. Хотя получение все равно тупит, поэтому не факт что поможет
+
+9todo3 - fix name - # $F1_BotToken  \ # $F1_ChatID == global, not F1 (function)
+9todo4 = fix DreamAnswEditionv23SortedReady4Send \ GetDataFromVmguruReady4Sent - сделать единообразно. 
+
+9todo5 разнести конфиг прода и теста, в части учета "что отправили" - чтобы по итогу нормально в прод отправлять. 
+
+9todo6 добавить бы отслеживание релиз нот
+https://docs.vmware.com/en/VMware-vSphere/7.0/rn/vsphere-esxi-70u3k-release-notes.html
+https://docs.vmware.com/en/VMware-vSphere/index.html - не понятно как изымать текст из этой массы слоев. 
+
+9todo7 в некоторых случаях, как например сегодня в старой версии, код старой версии не смогла найти (видимо) файл конфига. 
+На выходе странное, файл хранимой конфигурации как будто не просто пересоздан, а вообще потерял всю информацию. 
+Добавить в логирование результаты считывания файла, количество строк и последние конфиги в нем. 
+
+9todo8 или хотя бы просто сделать пометку что начата запись в файл
+9todo9 логи телеги выводить в перезаписываемый файл, чтобы не валились на экран
+
+
+9todo10 
+Johan van Amersfoort and Frank Denneman present a NUMA deep dive
+https://www.youtube.com/watch?v=VnfFk1W1MqE
+https://medium.com/@FrankDenneman
+
+Doug Baer is a Staff Architect on the Hands-on Labs team at VMware.
+https://blogs.vmware.com/hol/author/doug_baer
+
+Cormac Hogan is a Director and Chief Technologist in the Office of the CTO in the Cloud Platform Business Unit (CPBU) at VMware
+https://cormachogan.com/
+
+итд
+Страшно узок их круг(С)
+
+Поясняют они работу Numa "на сейчас".
+https://frankdenneman.nl/2019/02/19/amd-epyc-and-vsphere-vnuma/
+https://frankdenneman.nl/2019/10/14/amd-epyc-naples-vs-rome-and-vsphere-cpu-scheduler-updates/
+Перевод
+https://medium.com/@pryalukhin/amd-epyc-and-vsphere-vnuma-84ad66841035
+
+
+9todo11 Проблема перезаписи понятна. Надо сделать бекап конфигурации перед каждым запуском и перезаписыванием, 
+потому что похоже тут ошибка в логике - что чего-то приедет из массива, а если не приехало то что? 
+И если не приехало ничего, то в файл учета пишется ноль и потом идет переотправка снова всего массива. 
+В логи должно писаться приехало \ отчищено \ бедт отправлено \ последняя запись в файле конфига
