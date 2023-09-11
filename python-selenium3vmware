@@ -1,0 +1,129 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+# man bug https://github.com/SeleniumHQ/selenium/issues/12300
+# from selenium.webdriver.firefox.options import Options
+#options = Options()
+# options.binary_location = r'C:\soft\Mozilla\firefox.exe'
+# driver = webdriver.Firefox(options=options)
+# from selenium import webdriver
+# from selenium.webdriver.firefox.service import Service as FirefoxService
+# from webdriver_manager.firefox import GeckoDriverManager
+
+# driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+
+# service = ChromeService(executable_path=chromedriver_path)
+# service = FirefoxDriverService(executable_path="C:\SeleniumWeb\geckodriver.exe")
+
+# 01 https://habr.com/ru/articles/248559/
+# 02 https://habr.com/ru/articles/250921/
+# 03 https://selenium-python.readthedocs.io/getting-started.html
+# 04 need install pip install webdriver-manager for firefox 
+# https://github.com/SergeyPirogov/webdriver_manager#use-with-firefox
+
+# driver = webdriver.Firefox() так все равно не работает даже с pip install webdriver-manager
+
+#v2 
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from webdriver_manager.firefox import GeckoDriverManager
+# from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
+
+# driver = webdriver.Firefox(service_log_path='C:\python script\my-app-megatest01.log') == TypeError: __init__() got an unexpected keyword argument 'service_log_path'
+#  DeprecationWarning: Firefox will soon stop logging to geckodriver.log by default; Specify desired logs with log_output
+#  //record log in Firefoxlogs.txt file
+# https://www.tutorialspoint.com/how-to-get-rid-of-firefox-logging-in-selenium for Jabva
+# python https://stackoverflow.com/questions/50960539/how-do-i-disable-geckodrivers-log-on-selenium-python-3
+# pytjon log_path – (Optional) File path for the file to be opened and passed as the subprocess stdout/stderr handler, defaults to geckodriver.log.
+# https://www.selenium.dev/documentation/webdriver/troubleshooting/logging/
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.options import Log
+
+# log = Log()
+# log.level = "TRACE"
+# options = Options()
+# options.add_argument(log.level)
+# https://stackoverflow.com/questions/52317807/how-to-configure-geckodriver-with-log-level-and-log-location-through-selenium-an
+# bug/ https://github.com/SeleniumHQ/selenium/issues/11061
+#  [🚀 Feature]: Allow specifying arguments to open for firefox.Service log #11061 
+
+#v2
+# driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), firefox_options=options, log_output="geckodriver.log")
+# driver = webdriver.Firefox(firefox_options=options, executable_path=r'C:\Utility\BrowserDrivers\geckodriver.exe', service_log_path='./Logs/geckodriver_service_log_path.log')
+# так работает после установки webdriver-manager и перезапуска vscode
+# driver = webdriver.Firefox(firefox_options=options, service_log_path='C:\python script\test1234.log') #
+#  TypeError: __init__() got an unexpected keyword argument 'firefox_options'
+
+#v3
+options = webdriver.FirefoxOptions()
+log_path = "file1.log" #  DeprecationWarning: log_path has been deprecated, please use log_output
+log_output = "file2.log"
+print("Just warning")
+service = webdriver.firefox.service.Service(GeckoDriverManager().install(), log_path=log_path, log_output=log_output)
+
+# driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+driver = webdriver.Firefox(service=service, options=options)
+print("Please proceed")
+
+
+# elem = driver.find_element_by_name("q") deprecated 
+# https://stackoverflow.com/questions/72773206/selenium-python-attributeerror-webdriver-object-has-no-attribute-find-el
+# find_element_by_name(‘name’) 	find_element(By.NAME, ‘name’)
+# https://pythoninoffice.com/fixing-attributeerror-webdriver-object-has-no-attribute-find_element_by_xpath/#google_vignette
+
+#V5 from example
+# driver.get("http://www.python.org")
+# assert "Python" in driver.title
+# elem = driver.find_element(By.NAME, 'q')
+# elem.send_keys("pycon")
+# elem.send_keys(Keys.RETURN)
+# assert "No results found." not in driver.page_source
+# driver.close()
+# end of v5
+
+#v6
+driver.get("https://docs.vmware.com/en/VMware-vSphere/index.html")
+# api https://pythoninoffice.com/fixing-attributeerror-webdriver-object-has-no-attribute-find_element_by_xpath/
+# elem01 = driver.find_element(By.CLASS_NAME, "expand-text align-middle")
+# https://stackoverflow.com/questions/38534241/how-to-locate-a-span-with-a-specific-text-in-selenium-using-java
+# https://pythoninoffice.com/fixing-attributeerror-webdriver-object-has-no-attribute-find_element_by_xpath/
+Elem02 = driver.find_element(By.XPATH, "//span[.='Expand All']")
+Elem02.click()
+# https://stackoverflow.com/questions/59637048/how-to-find-element-by-part-of-its-id-name-in-selenium-with-python
+# http://makeseleniumeasy.com/2020/11/11/wildcard-characters-in-xpath-selenium-webdriver/
+# https://stackoverflow.com/questions/56370561/how-to-pass-wildcard-for-xpath-to-be-consumed-by-seleniumc
+# https://selenium-by-arun.blogspot.com/2017/04/341-using-wild-card-in-xpath-statements.html
+# All_Elem03 = driver.find_element(By.XPATH, "//*[contains(@name,'Product Landing_toc links')]") # при таком исполнении All_Elem03  валится по ошибке. 
+# All_Elem03 = driver.find_element(By.XPATH, "//*[starts-with(@name,'&amp;lpos=Product Landing_toc links')]") #  Message: Unable to locate element: //*[starts-with
+# All_Elem03 = driver.find_element(By.XPATH, "//a[starts-with(@name,'&amp;lpos=Product Landing_toc links')]") # Message: Unable to locate element: //a[starts-with
+All_Elem03 = driver.find_element(By.XPATH, "//a[.='VMware ESXi 8.0c Release Notes']") # так работает
+# https://www.geeksforgeeks.org/find_element_by_xpath-driver-method-selenium-python/
+# https://pythonexamples.org/python-selenium-find-element-by-xpath/
+# https://www.guru99.com/xpath-selenium.html Xpath=//*[contains(@name,'btn')] Xpath=//*[contains(text(),'here')] 
+# <a class="noLabel" target="_self" href="/en/VMware-vSphere/8.0/rn/vsphere-esxi-80c-release-notes/index.html" 
+# name="&amp;lpos=Product Landing_toc links : 6" onclick="s_objectID='Product Landing_toc links : 
+# VMware ESXi 8.0c Release Notes : 6'">VMware ESXi 8.0c Release Notes</a>
+# 
+
+# The problem is that you are using find_element_by_xpath which return only one WebElement (which is not iterable), the find_elements_by_xpath return a list of WebElements.
+# Solution: replace find_element_by_xpath with find_elements_by_xpath
+
+All_Elem04 = driver.find_elements(By.XPATH, "//a[contains(text(), '8.0c')]") # работает
+# All_Elem05 = driver.find_element(By.XPATH, "//a[start-with(@href, '/en/VMware-vSphere')]") # не работает
+All_Elem05 = driver.find_elements(By.XPATH, "//a[contains(@href, '/en/VMware-vSphere')]") # так тоже работает
+#  print("Mark 0001")
+# print(All_Elem03)
+# print("Mark 0002")
+# print(All_Elem04)
+# print("Mark 0003")
+# print(All_Elem05)
+# print("Mark 0004 go to type")
+# https://www.selenium.dev/documentation/webdriver/elements/finders/
+# type(All_Elem04) # не работает
+print("Mark 0005 count")
+print(All_Elem05.count)
+print("Mark 0006 go all elementSas text")
+
+for e in All_Elem05:
+    print(e.text)
+# driver.close()
